@@ -40,12 +40,18 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.5.0'
     implementation 'androidx.navigation:navigation-ui:2.5.0'
 
-    //Dep Retrofit: https://square.github.io/retrofit/
+    //Retrofit: https://square.github.io/retrofit/
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
     //Picasso: https://github.com/square/picasso
     implementation 'com.squareup.picasso:picasso:2.8'
+
+    //Room: https://developer.android.com/training/data-storage/room
+    implementation "androidx.room:room-runtime:2.4.2"
+    implementation 'androidx.room:room-common:2.4.2'
+        //possibilita o uso de anotation das nossas entidades
+    annotationProcessor "androidx.room:room-compiler:2.4.2"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

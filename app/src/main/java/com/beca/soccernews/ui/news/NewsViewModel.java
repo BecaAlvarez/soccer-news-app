@@ -4,9 +4,12 @@ package com.beca.soccernews.ui.news;
 //"Avisa a tela" sobre atualizações de dados ou error
 
 
+import android.app.Application;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.room.Room;
 
 import com.beca.soccernews.data.remote.SoccerNewsApi;
 import com.beca.soccernews.domain.News;
@@ -25,6 +28,8 @@ public class NewsViewModel extends ViewModel {
     private final MutableLiveData<List<News>>news = new MutableLiveData<>();
     private final SoccerNewsApi api;
 
+
+
     public NewsViewModel() {
         //Instanciar: Configurações do retrofit
         Retrofit retrofit = new Retrofit.Builder()
@@ -33,6 +38,7 @@ public class NewsViewModel extends ViewModel {
                 .build();
 
         api = retrofit.create(SoccerNewsApi.class);
+
         //chamada do metodo
         this.findNews();
     }
@@ -60,5 +66,8 @@ public class NewsViewModel extends ViewModel {
     //Retornar a lista de noticias
     public LiveData<List<News>> getNews() {
         return this.news;
+    }
+
+    private class AppDatabase {
     }
 }

@@ -11,8 +11,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.beca.soccernews.MainActivity;
 import com.beca.soccernews.databinding.FragmentFavoritesBinding;
+import com.beca.soccernews.domain.News;
+import com.beca.soccernews.ui.adapters.NewsAdapter;
+
+import java.util.List;
 
 public class FavoritesFragment extends Fragment {
 
@@ -23,11 +29,22 @@ public class FavoritesFragment extends Fragment {
         FavoritesViewModel favoritesViewModel = new ViewModelProvider(this).get(FavoritesViewModel.class);
 
         binding = FragmentFavoritesBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
-        //Pega uma livedata e a observa passando o lifecycle dessa activity e qd houver um estimulo atribuir o texto que esta retornando ao textview
-        favoritesViewModel.getText().observe(getViewLifecycleOwner(), binding.textFavorites::setText);
-        return root;
+        loadFavoritesNews();
+
+        return binding.getRoot();
+    }
+
+    private void loadFavoritesNews() {
+        MainActivity activity = (MainActivity) getActivity();
+        if(activity != null) {
+            List<News> favoriteNews = (List<News>) activity.getDb().newsDao().loadFavoriteNews();
+            binding.rvnews.setLayoutManager(new LinearLayoutManager(getContext()));
+            binding.rvnews.setAdapter(new NewsAdapter(favoriteNews, updatedNews -> {
+                activity.getDb().newsDao().save(updatedNews);
+                loadFavoritesNews();
+            }));
+        }
     }
 
     @Override
