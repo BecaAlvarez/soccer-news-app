@@ -47,7 +47,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         holder.binding.tvDescription.setText(news.description);
         //pega noticia (news.image), estilização, e coloca dentro do binding o imageView( ivThumbail)
         Picasso.get().load(news.image).fit().into(holder.binding.ivThumbail);
-        //Ativar o botão openLink e redirecionar para o link "abrir Link" no browser
+        //Implementação da funcionalidade de "Abrir Link"
         holder.binding.btOpenLink.setOnClickListener(view ->{
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(news.link));

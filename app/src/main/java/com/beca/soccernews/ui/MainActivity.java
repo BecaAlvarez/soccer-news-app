@@ -1,4 +1,4 @@
-package com.beca.soccernews;
+package com.beca.soccernews.ui;
 
 import android.os.Bundle;
 
@@ -7,17 +7,13 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.room.Room;
 
 import com.beca.soccernews.R;
-import com.beca.soccernews.data.local.AppDatabase;
 import com.beca.soccernews.databinding.ActivityMainBinding;
-import com.beca.soccernews.ui.news.NewsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +30,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
-        this.setupDb();
     }
 
-    private void setupDb() {
-        db = Room.databaseBuilder(this, AppDatabase.class, "soccer-news")
-                .allowMainThreadQueries()
-                .build();
-    }
-
-    public AppDatabase getDb() {
-        return db;
-    }
 }

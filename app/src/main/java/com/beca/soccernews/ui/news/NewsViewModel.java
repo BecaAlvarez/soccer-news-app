@@ -4,14 +4,16 @@ package com.beca.soccernews.ui.news;
 //"Avisa a tela" sobre atualizações de dados ou error
 
 
-import android.app.Application;
 
+import android.os.AsyncTask;
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.room.Room;
 
-import com.beca.soccernews.data.remote.SoccerNewsApi;
+
+import com.beca.soccernews.data.SoccerNewsRepository;
 import com.beca.soccernews.domain.News;
 
 import java.util.List;
@@ -19,48 +21,46 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+
 
 
 public class NewsViewModel extends ViewModel {
 
+    public enum State{
+        DOING, DONE, ERROR;
+    }
+
     private final MutableLiveData<List<News>>news = new MutableLiveData<>();
-    private final SoccerNewsApi api;
-
-
+    private final MutableLiveData<State> state = new MutableLiveData<>();
 
     public NewsViewModel() {
-        //Instanciar: Configurações do retrofit
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://becaalvarez.github.io/soccer-news-api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        api = retrofit.create(SoccerNewsApi.class);
-
-        //chamada do metodo
         this.findNews();
     }
-    //Consumir a API e precisa de um callback para os estados de sucesso ou não
+    //Ciclo de vida da tela
     public void findNews() {
-        api.getNews().enqueue(new Callback<List<News>>() {
+        state.setValue(State.DOING);
+        SoccerNewsRepository.getInstance().getRemoteApi().getNews().enqueue(new Callback<List<News>>() {
             @Override
-            public void onResponse(Call<List<News>> call, Response<List<News>> response) {
+            public void onResponse(@NonNull Call<List<News>> call, @NonNull Response<List<News>> response) {
                 if(response.isSuccessful()){
-                    // Informa a ui q a infor voltou da API e pode ser utilizada para atualizar o recycle view
                    news.setValue(response.body());
+                   state.setValue(State.DONE);
                 }
                 else{
-                    //TODO pensar em tratamento de erros
+                    state.setValue(State.ERROR);
                 }
             }
 
             @Override
-            public void onFailure(Call<List<News>> call, Throwable t) {
-                //TODO pensar em tratamento de erros
+            public void onFailure(@NonNull Call<List<News>> call, Throwable error) {
+                error.printStackTrace();
+                state.setValue(State.ERROR);
             }
         });
+    }
+    //Integrar com o BD
+    public void saveNews(News news){
+        AsyncTask.execute(() -> SoccerNewsRepository.getInstance().getLocalDb().newsDao().save(news));
     }
 
     //Retornar a lista de noticias
@@ -68,6 +68,5 @@ public class NewsViewModel extends ViewModel {
         return this.news;
     }
 
-    private class AppDatabase {
-    }
+    public LiveData<State> getState(){return this.state;}
 }
