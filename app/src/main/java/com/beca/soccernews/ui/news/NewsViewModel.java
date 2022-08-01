@@ -4,14 +4,12 @@ package com.beca.soccernews.ui.news;
 //"Avisa a tela" sobre atualizações de dados ou error
 
 
-
 import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
 
 import com.beca.soccernews.data.SoccerNewsRepository;
 import com.beca.soccernews.domain.News;
@@ -23,30 +21,29 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-
 public class NewsViewModel extends ViewModel {
 
-    public enum State{
+    public enum State {
         DOING, DONE, ERROR;
     }
 
-    private final MutableLiveData<List<News>>news = new MutableLiveData<>();
+    private final MutableLiveData<List<News>> news = new MutableLiveData<>();
     private final MutableLiveData<State> state = new MutableLiveData<>();
 
     public NewsViewModel() {
         this.findNews();
     }
+
     //Ciclo de vida da tela
     public void findNews() {
         state.setValue(State.DOING);
         SoccerNewsRepository.getInstance().getRemoteApi().getNews().enqueue(new Callback<List<News>>() {
             @Override
             public void onResponse(@NonNull Call<List<News>> call, @NonNull Response<List<News>> response) {
-                if(response.isSuccessful()){
-                   news.setValue(response.body());
-                   state.setValue(State.DONE);
-                }
-                else{
+                if (response.isSuccessful()) {
+                    news.setValue(response.body());
+                    state.setValue(State.DONE);
+                } else {
                     state.setValue(State.ERROR);
                 }
             }
@@ -58,8 +55,9 @@ public class NewsViewModel extends ViewModel {
             }
         });
     }
+
     //Integrar com o BD
-    public void saveNews(News news){
+    public void saveNews(News news) {
         AsyncTask.execute(() -> SoccerNewsRepository.getInstance().getLocalDb().newsDao().save(news));
     }
 
@@ -68,5 +66,7 @@ public class NewsViewModel extends ViewModel {
         return this.news;
     }
 
-    public LiveData<State> getState(){return this.state;}
+    public LiveData<State> getState() {
+        return this.state;
+    }
 }

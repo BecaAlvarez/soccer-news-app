@@ -50,10 +50,10 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.8'
 
     //Room: https://developer.android.com/training/data-storage/room
-    implementation "androidx.room:room-runtime:2.4.2"
+    implementation "androidx.room:room-runtime:2.4.3"
     //implementation 'androidx.room:room-common:2.4.2'
         //possibilita o uso de anotation das nossas entidades
-    annotationProcessor "androidx.room:room-compiler:2.4.2"
+    annotationProcessor "androidx.room:room-compiler:2.4.3"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

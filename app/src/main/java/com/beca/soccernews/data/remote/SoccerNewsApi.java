@@ -12,6 +12,6 @@ public interface SoccerNewsApi {
     //Chamada ao json
     @GET("news.json")
     //Acesso direto ao recurso
-    List<News> getNews();
+    Call<List<News>> getNews();
 
 }
